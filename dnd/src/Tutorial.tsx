@@ -3,12 +3,27 @@ import {useState} from 'react'
 import {DragDropContext, Droppable, Draggable} from "react-beautiful-dnd";
 
 const Tutorial = () => {
+    const listContainer = {
+        margin:8,border:'1px solid lightgrey',
+        borderRadius:2,
+        display:'flex',
+        flexDirection:'row',
+        alignItems:'center'
+    }
+
+    const tabContainer = {
+        margin:8,
+        border:'3px solid lightgrey',
+        borderRadius:2,
+        padding:8
+    }
+
     const config = {
         tabs: {
-            'snapchat': {id:'1', visible:true, extra:false, order:1, name:'snapchat'},
-            'youtube': {id:'2', visible:true, extra:false, order:2, name:'youtube'},
-            'instagram': {id:'3', visible:true, extra:false, order:3, name:'instagram'},
-            'facebook': {id:'4', visible:true, extra:true, order:4, name:'facebook'}
+            'snapchat': {id:'snapchat', visible:true, extra:false, order:1, name:'snapchat'},
+            'youtube': {id:'youtube', visible:true, extra:false, order:2, name:'youtube'},
+            'instagram': {id:'instagram', visible:true, extra:false, order:3, name:'instagram'},
+            'facebook': {id:'facebook', visible:true, extra:true, order:4, name:'facebook'}
         },
         rows: {
             'row-1': {
@@ -23,33 +38,64 @@ const Tutorial = () => {
             }
         },
         rowOrder: ['row-1','row-2']
-        
-    }
-
-    const listContainer = {
-        margin:8,border:'1px solid lightgrey',
-        borderRadius:2,
-        display:'flex',
-        flexDirection:'row',
-        alignItems:'center'
-    }
-
-    const tabList = {
-        display:'flex',
-        flexDirection:'row',
-    }
-
-    const tabContainer = {
-        margin:8,
-        border:'3px solid lightgrey',
-        borderRadius:2,
-        padding:8
     }
 
     const [state, setState] = useState(config);
 
     const onDragEnd = result => {
-        // TODO: reorder our column
+        const { destination, source, draggableId } = result;
+
+        if (!destination) return;
+        if (destination.droppableId === source.droppableId && destination.index === source.index) return;
+        
+        const start = state.rows[source.droppableId];
+        const finish = state.rows[destination.droppableId];
+
+        if(start === finish) {
+            const newTabs = Array.from(start.tabNames);
+            newTabs.splice(source.index, 1);
+            newTabs.splice(destination.index, 0, draggableId);
+
+            const newRow = {
+                ...start,
+                tabNames: newTabs
+            }
+
+            const newState = {
+                ...state,
+                rows: {
+                    ...state.rows,
+                    [newRow.id]: newRow
+                }
+            }
+
+            setState(newState)
+            return
+        }
+        
+        const startTabNames = Array.from(start.tabNames);
+        startTabNames.splice(source.index, 1);
+        const newStart = {
+            ...start,
+            tabNames: startTabNames
+        }
+
+        const finishTabNames = Array.from(finish.tabNames);
+        finishTabNames.splice(destination.index, 0, draggableId);
+        const newFinish = {
+            ...finish,
+            tabNames: finishTabNames,
+        };
+
+        const newState = {
+            ...state,
+            rows: {
+                ...state.rows,
+                [newStart.id]: newStart,
+                [newFinish.id]: newFinish
+            }
+        }
+        setState(newState)
     };
 
     return (
