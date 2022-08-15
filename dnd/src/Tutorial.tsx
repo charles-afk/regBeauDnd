@@ -1,5 +1,5 @@
 // @ts-nocheck
-import {useState} from 'react'
+import {useState, Fragment} from 'react'
 import {DragDropContext, Droppable, Draggable} from "react-beautiful-dnd";
 
 const Tutorial = () => {
@@ -20,10 +20,10 @@ const Tutorial = () => {
 
     const config = {
         tabs: {
-            'snapchat': {id:'snapchat', visible:true, extra:false, order:1, name:'snapchat'},
-            'youtube': {id:'youtube', visible:true, extra:false, order:2, name:'youtube'},
-            'instagram': {id:'instagram', visible:true, extra:false, order:3, name:'instagram'},
-            'facebook': {id:'facebook', visible:true, extra:true, order:4, name:'facebook'}
+            'snapchat': {id:'snapchat', visible:true, extra:false, order:1},
+            'youtube': {id:'youtube', visible:true, extra:false, order:2},
+            'instagram': {id:'instagram', visible:true, extra:false, order:3},
+            'facebook': {id:'facebook', visible:true, extra:true, order:4}
         },
         rows: {
             'row-1': {
@@ -41,6 +41,11 @@ const Tutorial = () => {
     }
 
     const [state, setState] = useState(config);
+    const [edit, setEdit] = useState(true);
+
+    const editJsx = <Fragment>
+        {edit ? 'Edit +' : 'Update'}
+    </Fragment>
 
     const onDragEnd = result => {
         const { destination, source, draggableId } = result;
@@ -70,6 +75,9 @@ const Tutorial = () => {
             }
 
             setState(newState)
+            // Tab dropped within own list
+            console.log('in')
+            
             return
         }
         
@@ -96,36 +104,43 @@ const Tutorial = () => {
             }
         }
         setState(newState)
+        // Tab dropped outside of own list
+        console.log('out')
     };
 
     return (
-        <DragDropContext onDragEnd={onDragEnd}>
-            {state.rowOrder.map( (rowName) => {
-                const row = state.rows[rowName]
-                const tabs = row.tabNames.map(name => state.tabs[name])
-                
-                return <Droppable key={row.id} droppableId={row.id} > 
-                    { (provided, snapshot) => ( 
-                        <div ref={provided.innerRef} {...provided.droppableProps} style={listContainer}>
-                            <h3 style={{padding:8}}>
-                                {row.title}
-                            </h3> 
-                            {tabs.map((tab,index) => (
-                                <Draggable key={tab.id} draggableId={tab.id} index={index}>
-                                    {(provided, snapshot) => (
-                                        <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                                            <div style={tabContainer}>
-                                                {tab.name}
+        <div>
+            <DragDropContext onDragEnd={onDragEnd} >
+                {state.rowOrder.map( (rowName) => {
+                    const row = state.rows[rowName]
+                    const tabs = row.tabNames.map(name => state.tabs[name])
+                    
+                    return <Droppable key={row.id} droppableId={row.id} > 
+                        { (provided, snapshot) => ( 
+                            <div ref={provided.innerRef} {...provided.droppableProps} style={listContainer}>
+                                <h3 style={{padding:8}}>
+                                    {row.title}
+                                </h3> 
+                                {tabs.map((tab,index) => (
+                                    <Draggable key={tab.id} draggableId={tab.id} index={index} isDragDisabled={edit}>
+                                        {(provided, snapshot) => (
+                                            <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                                                <div style={tabContainer}>
+                                                    {tab.id}
+                                                </div>
                                             </div>
-                                        </div>
-                                    )}
-                                </Draggable>
-                            ))}
-                        </div>
-                    )}
-                </Droppable>;
-            })}
-        </DragDropContext>
+                                        )}
+                                    </Draggable>
+                                ))}
+                            </div>
+                        )}
+                    </Droppable>;
+                })}
+            </DragDropContext>
+            <div onClick={()=>setEdit(!edit)} style={{cursor:'pointer'}}>
+                {editJsx}
+            </div>
+        </div>
     )
 }
 
