@@ -86,7 +86,7 @@ const Tutorial = () => {
         const newStart = {
             ...start,
             tabNames: startTabNames
-        }
+        };
 
         const finishTabNames = Array.from(finish.tabNames);
         finishTabNames.splice(destination.index, 0, draggableId);
@@ -102,7 +102,8 @@ const Tutorial = () => {
                 [newStart.id]: newStart,
                 [newFinish.id]: newFinish
             }
-        }
+        };
+
         setState(newState)
         // Tab dropped outside of own list
         console.log('out')
@@ -111,7 +112,7 @@ const Tutorial = () => {
     return (
         <div>
             <DragDropContext onDragEnd={onDragEnd}>
-                {state.rowOrder.map( (rowName) => {
+                {state.rowOrder.map( (rowName, ind) => {
                     const row = state.rows[rowName]
                     const tabs = row.tabNames.map(name => state.tabs[name])
                     
@@ -126,7 +127,12 @@ const Tutorial = () => {
                                         { (provided) => (
                                             <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
                                                 <div style={tabContainer}>
-                                                    {tab.id}
+                                                    {tab.id}&nbsp;
+                                                    <button disabled={edit} onClick={()=>{
+                                                        const newState = [...state];
+                                                        newState[ind].splice(index, 1);
+                                                        setState(newState.filter(group => group.length));
+                                                    }}>X</button>
                                                 </div>
                                             </div>
                                         )}
