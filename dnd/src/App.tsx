@@ -1,13 +1,12 @@
 // @ts-nocheck
-import {useState} from 'react';
+import {useState,useEffect} from 'react';
 import './App.css';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
-const getItems = (count, offset = 0) =>
-  Array.from({ length: count }, (v, k) => k).map(k => ({
-    id: `item-${k + offset}-${new Date().getTime()}`,
-    content: `item ${k + offset}`
-  }));
+const getItems = (count, offset = 0) => Array.from({ length: count }, (v, k) => k).map(k => ({
+  id: `item-${k + offset}-${new Date().getTime()}`,
+  content: `item ${k + offset}`
+}));
 
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list);
@@ -47,6 +46,7 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   // styles we need to apply on draggables
   ...draggableStyle
 });
+
 const getListStyle = isDraggingOver => ({
   background: isDraggingOver ? "lightblue" : "lightgrey",
   padding: grid,
@@ -55,6 +55,10 @@ const getListStyle = isDraggingOver => ({
 
 function App() {
   const [state, setState] = useState([getItems(10), getItems(5, 10)]);
+
+  useEffect(()=>{
+    console.log(state)
+  },[])
 
   function onDragEnd(result) {
     const { source, destination } = result;
@@ -88,7 +92,6 @@ function App() {
 
       <div style={{ display: "flex" }}>
         <DragDropContext onDragEnd={onDragEnd}>
-
           {state.map((el, ind) => (
             <Droppable key={ind} droppableId={`${ind}`}>
 
@@ -109,19 +112,15 @@ function App() {
                               setState(newState.filter(group => group.length));
                             }}> delete </button>
                           </div>
-                        </div>
-                      )}
+                        </div> )}
 
-                    </Draggable>
-                  ))}
-
+                    </Draggable>))}
+                  
                   {provided.placeholder}
-                </div>
-              )}
+                </div>)}
 
             </Droppable>
           ))}
-
         </DragDropContext>
       </div>
     </div>
