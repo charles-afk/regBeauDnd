@@ -15,7 +15,7 @@ const Tutorial = () => {
         margin:8,
         border:'3px solid lightgrey',
         borderRadius:2,
-        padding:8
+        padding:8,
     }
 
     const config = {
@@ -110,20 +110,20 @@ const Tutorial = () => {
 
     return (
         <div>
-            <DragDropContext onDragEnd={onDragEnd} >
+            <DragDropContext onDragEnd={onDragEnd}>
                 {state.rowOrder.map( (rowName) => {
                     const row = state.rows[rowName]
                     const tabs = row.tabNames.map(name => state.tabs[name])
                     
                     return <Droppable key={row.id} droppableId={row.id} > 
-                        { (provided, snapshot) => ( 
+                        { (provided) => ( 
                             <div ref={provided.innerRef} {...provided.droppableProps} style={listContainer}>
                                 <h3 style={{padding:8}}>
                                     {row.title}
                                 </h3> 
                                 {tabs.map((tab,index) => (
                                     <Draggable key={tab.id} draggableId={tab.id} index={index} isDragDisabled={edit}>
-                                        {(provided, snapshot) => (
+                                        { (provided) => (
                                             <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
                                                 <div style={tabContainer}>
                                                     {tab.id}
@@ -132,12 +132,13 @@ const Tutorial = () => {
                                         )}
                                     </Draggable>
                                 ))}
+                                {provided.placeholder}
                             </div>
                         )}
                     </Droppable>;
                 })}
             </DragDropContext>
-            <div onClick={()=>setEdit(!edit)} style={{cursor:'pointer'}}>
+            <div onClick={()=>setEdit(!edit)} style={{cursor:'pointer', padding:8, margin:8}}>
                 {editJsx}
             </div>
         </div>
