@@ -129,9 +129,12 @@ const Tutorial = () => {
                                                 <div style={tabContainer}>
                                                     {tab.id}&nbsp;
                                                     <button disabled={edit} onClick={()=>{
-                                                        const newState = [...state];
-                                                        newState[ind].splice(index, 1);
-                                                        setState(newState.filter(group => group.length));
+                                                        let newState = [...state.rows[rowName].tabNames];
+                                                        console.log(tab.id, newState);
+                                                        newState = newState.filter(tabRemoved => tabRemoved !== tab.id)
+                                                        console.log(newState)
+                                                       
+                                                        
                                                     }}>X</button>
                                                 </div>
                                             </div>
