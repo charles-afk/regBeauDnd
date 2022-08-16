@@ -49,23 +49,44 @@ const Tutorial = () => {
 
     const onDragEnd = result => {
         const { destination, source, draggableId } = result;
+        /** draggableId: youtube
+         *  type: 'TYPE'
+         *  reason: DROP
+         *  source: {
+         *      droppableId: row-1
+         *      index: 0
+         *  }
+         *  destination: {
+         *      droppableId: row-2
+         *      index: 1
+         *  }
+         */
 
+        // dropped outside of the list
         if (!destination) return;
+        // location of drop hasnt changed from its original
         if (destination.droppableId === source.droppableId && destination.index === source.index) return;
         
+        // references row where event starts, and finishes
         const start = state.rows[source.droppableId];
         const finish = state.rows[destination.droppableId];
 
+        // starts and finished in the same row
         if(start === finish) {
+            // what the new row will look like
             const newTabs = Array.from(start.tabNames);
+            // remove old location
             newTabs.splice(source.index, 1);
+            // place in new location
             newTabs.splice(destination.index, 0, draggableId);
 
+            // updated new row
             const newRow = {
                 ...start,
                 tabNames: newTabs
             }
 
+            // updated state
             const newState = {
                 ...state,
                 rows: {
@@ -75,14 +96,13 @@ const Tutorial = () => {
             }
 
             setState(newState)
-            // Tab dropped within own list
-            console.log('in')
-            
             return
         }
         
+        // Move from one row to the next
         const startTabNames = Array.from(start.tabNames);
         startTabNames.splice(source.index, 1);
+        // updated start row
         const newStart = {
             ...start,
             tabNames: startTabNames
@@ -90,11 +110,13 @@ const Tutorial = () => {
 
         const finishTabNames = Array.from(finish.tabNames);
         finishTabNames.splice(destination.index, 0, draggableId);
+        // updated finish row
         const newFinish = {
             ...finish,
             tabNames: finishTabNames,
         };
 
+        // updated state
         const newState = {
             ...state,
             rows: {
@@ -112,7 +134,7 @@ const Tutorial = () => {
     return (
         <div>
             <DragDropContext onDragEnd={onDragEnd}>
-                {state.rowOrder.map( (rowName, ind) => {
+                {state.rowOrder.map( (rowName) => {
                     const row = state.rows[rowName]
                     const tabs = row.tabNames.map(name => state.tabs[name])
                     
@@ -133,8 +155,6 @@ const Tutorial = () => {
                                                         console.log(tab.id, newState);
                                                         newState = newState.filter(tabRemoved => tabRemoved !== tab.id)
                                                         console.log(newState)
-                                                       
-                                                        
                                                     }}>X</button>
                                                 </div>
                                             </div>
