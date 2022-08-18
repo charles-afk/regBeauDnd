@@ -158,7 +158,10 @@ const Tutorial = () => {
                                                 }
                                             */}
                                             { (provided, snapshot) => (
-                                                <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps} isdragging={snapshot.isDragging}>
+                                                <div ref={provided.innerRef} 
+                                                {...provided.draggableProps} 
+                                                {...provided.dragHandleProps} 
+                                                isdragging={snapshot.isDragging}>
                                                     <div className='tabContainer'>
                                                         {tab.id}&nbsp;
                                                         <button disabled={edit} onClick={()=>{
