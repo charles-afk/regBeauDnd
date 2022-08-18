@@ -9,7 +9,8 @@ const Tutorial = () => {
         borderRadius:2,
         display:'flex',
         flexDirection:'row',
-        alignItems:'center'
+        alignItems:'center',
+        width: 505,
     }
 
     const tabContainer = {
