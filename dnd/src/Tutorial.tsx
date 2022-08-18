@@ -132,41 +132,41 @@ const Tutorial = () => {
     };
 
     return (
-        <div>
-            <DragDropContext onDragEnd={onDragEnd}>
-                {state.rowOrder.map( (rowName) => {
-                    const row = state.rows[rowName]
-                    const tabs = row.tabNames.map(name => state.tabs[name])
-                    
-                    return <Droppable key={row.id} droppableId={row.id} > 
-                        { (provided) => ( 
-                            <div ref={provided.innerRef} {...provided.droppableProps} style={listContainer}>
-                                <h3 style={{padding:8}}>
-                                    {row.title}
-                                </h3> 
-                                {tabs.map((tab,index) => (
-                                    <Draggable key={tab.id} draggableId={tab.id} index={index} isDragDisabled={edit}>
-                                        { (provided) => (
-                                            <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                                                <div style={tabContainer}>
-                                                    {tab.id}&nbsp;
-                                                    <button disabled={edit} onClick={()=>{
-                                                        let newState = [...state.rows[rowName].tabNames];
-                                                        console.log(tab.id, newState);
-                                                        newState = newState.filter(tabRemoved => tabRemoved !== tab.id)
-                                                        console.log(newState)
-                                                    }}>X</button>
+        <div style={{display:'flex',flexDirection:'row'}}>
+            <div style={{display:'flex',flexDirection:'column'}}>
+                <DragDropContext onDragEnd={onDragEnd}>
+                    {state.rowOrder.map( (rowName) => {
+                        const row = state.rows[rowName]
+                        const tabs = row.tabNames.map(name => state.tabs[name])
+                        
+                        
+                        return <Droppable key={row.id} droppableId={row.id} direction='horizontal'> 
+                            { (provided) => ( 
+                                <div ref={provided.innerRef} {...provided.droppableProps} style={listContainer}>
+                                    {tabs.map((tab,index) => (
+                                        <Draggable key={tab.id} draggableId={tab.id} index={index} isDragDisabled={edit}>
+                                            { (provided) => (
+                                                <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                                                    <div style={tabContainer}>
+                                                        {tab.id}&nbsp;
+                                                        <button disabled={edit} onClick={()=>{
+                                                            let newState = [...state.rows[rowName].tabNames];
+                                                            console.log(tab.id, newState);
+                                                            newState = newState.filter(tabRemoved => tabRemoved !== tab.id)
+                                                            console.log(newState)
+                                                        }}>X</button>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        )}
-                                    </Draggable>
-                                ))}
-                                {provided.placeholder}
-                            </div>
-                        )}
-                    </Droppable>;
-                })}
-            </DragDropContext>
+                                            )}
+                                        </Draggable>
+                                    ))}
+                                    {provided.placeholder}
+                                </div>
+                            )}
+                        </Droppable>;
+                    })}
+                </DragDropContext>
+            </div>
             <div onClick={()=>setEdit(!edit)} style={{cursor:'pointer', padding:8, margin:8}}>
                 {editJsx}
             </div>
