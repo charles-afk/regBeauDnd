@@ -28,6 +28,13 @@
   color: #61dafb;
 }
 
+.tabContainer {
+  margin: 8px;
+  border: 3px solid lightgrey;
+  border-radius:2;
+  padding:8px;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

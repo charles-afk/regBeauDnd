@@ -1,6 +1,7 @@
 // @ts-nocheck
 import {useState, Fragment} from 'react'
 import {DragDropContext, Droppable, Draggable} from "react-beautiful-dnd";
+import './App.css';
 
 const Tutorial = () => {
     const listContainer = {
@@ -141,13 +142,23 @@ const Tutorial = () => {
                         
                         
                         return <Droppable key={row.id} droppableId={row.id} direction='horizontal'> 
-                            { (provided) => ( 
+                            {/* droppableSnapshot = {
+                                    isDraggingOver: true,
+                                    draggingOver: 'row-2',
+                                } */}
+                            { (provided, snapshot) => ( 
                                 <div ref={provided.innerRef} {...provided.droppableProps} style={listContainer}>
                                     {tabs.map((tab,index) => (
                                         <Draggable key={tab.id} draggableId={tab.id} index={index} isDragDisabled={edit}>
-                                            { (provided) => (
-                                                <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                                                    <div style={tabContainer}>
+                                            {/* 
+                                                draggableSnapshot = {
+                                                    isDragging: true,
+                                                    draggingOverWith: 'facebook',
+                                                }
+                                            */}
+                                            { (provided, snapshot) => (
+                                                <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps} isdragging={snapshot.isDragging}>
+                                                    <div className='tabContainer'>
                                                         {tab.id}&nbsp;
                                                         <button disabled={edit} onClick={()=>{
                                                             let newState = [...state.rows[rowName].tabNames];
@@ -160,7 +171,7 @@ const Tutorial = () => {
                                             )}
                                         </Draggable>
                                     ))}
-                                    {provided.placeholder}
+                                {provided.placeholder}
                                 </div>
                             )}
                         </Droppable>;
