@@ -1,21 +1,23 @@
 // @ts-nocheck
-import {useState, Fragment} from 'react'
+import {useState, useEffect, Fragment} from 'react'
 import {DragDropContext, Droppable, Draggable} from "react-beautiful-dnd";
 import './App.css';
 
 const Tutorial = () => {
     const listContainer = {
-        margin:8,border:'1px solid lightgrey',
+        margin:8,
+        //border:'1px solid black',
         borderRadius:2,
         display:'flex',
         flexDirection:'row',
         alignItems:'center',
-        //width: 505,
+        width: 'auto',
+        //backgroundColor:'lightgreen'
     }
 
     const tabContainer = {
         margin:8,
-        border:'3px solid lightgrey',
+        border:'3px solid black',
         borderRadius:2,
         padding:8,
     }
@@ -25,7 +27,10 @@ const Tutorial = () => {
             'snapchat': {id:'snapchat', visible:true, extra:false, order:1},
             'youtube': {id:'youtube', visible:true, extra:false, order:2},
             'instagram': {id:'instagram', visible:true, extra:false, order:3},
-            'facebook': {id:'facebook', visible:true, extra:true, order:4}
+            'facebook': {id:'facebook', visible:true, extra:true, order:4},
+            'whatsapp': {id:'whatsapp', visible:true, extra:true, order:4},
+            'pinterest': {id:'pinterest', visible:true, extra:true, order:4},
+            'squarespace': {id:'squarespace', visible:true, extra:true, order:4},
         },
         rows: {
             'row-1': {
@@ -36,7 +41,7 @@ const Tutorial = () => {
             'row-2': {
                 id:'row-2',
                 title:'Extra Tabs',
-                tabNames:['facebook']
+                tabNames:['facebook','pinterest','whatsapp','squarespace']
             }
         },
         rowOrder: ['row-1','row-2']
@@ -132,6 +137,30 @@ const Tutorial = () => {
         // Tab dropped outside of own list
         console.log('out')
     };
+    
+    const [totalContainerWidth, setTotalContainerWidth] = useState()
+    const [totalContainerWidth2, setTotalContainerWidth2] = useState()
+    useEffect(()=>{
+        try{
+            let container1 = document.querySelector('[data-rbd-droppable-id="row-1"]');
+            //let container2 = document.querySelector('[data-rbd-droppable-id="row-2"]');
+
+            let children1 = container1.children;
+            //let children2 = container2.children;
+            let totalWidth = 0;
+        
+            for (let i = 0; i < children1.length; i++) {
+                totalWidth += parseInt(children1[i].offsetWidth, 10);
+            }
+
+            //for (let i = 0; i < children2.length; i++) {
+            //    totalWidth += parseInt(children2[i].offsetWidth, 10);
+            //}
+
+            setTotalContainerWidth(`${totalWidth}px`);
+            console.log('hit')
+        } catch(err) {console.error(err)}
+    },[config.rows['row-1'].tabNames])
 
     return (
         <div style={{display:'flex',flexDirection:'row'}}>
@@ -141,14 +170,22 @@ const Tutorial = () => {
                         const row = state.rows[rowName]
                         const tabs = row.tabNames.map(name => state.tabs[name])
                         
-                        
                         return <Droppable key={row.id} droppableId={row.id} direction='horizontal'> 
                             {/* droppableSnapshot = {
                                     isDraggingOver: true,
                                     draggingOver: 'row-2',
                                 } */}
                             { (provided, snapshot) => ( 
-                                <div ref={provided.innerRef} {...provided.droppableProps} style={listContainer}>
+                                <div ref={provided.innerRef} {...provided.droppableProps} style={{
+                                    margin:8,
+                                    //border:'1px solid black',
+                                    borderRadius:2,
+                                    display:'flex',
+                                    flexDirection:'row',
+                                    alignItems:'center',
+                                    width: totalContainerWidth,
+                                    //backgroundColor:'lightgreen',
+                                }}>
                                     {tabs.map((tab,index) => (
                                         <Draggable key={tab.id} draggableId={tab.id} index={index} isDragDisabled={edit}>
                                             {/* 
@@ -182,7 +219,7 @@ const Tutorial = () => {
                     })}
                 </DragDropContext>
             </div>
-            <div onClick={()=>setEdit(!edit)} style={{cursor:'pointer', padding:8, margin:8}}>
+            <div onClick={()=>setEdit(!edit)} style={{cursor:'pointer', padding:8, margin:8, height:25}}>
                 {editJsx}
             </div>
         </div>
