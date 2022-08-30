@@ -10,7 +10,7 @@ const Tutorial = () => {
         display:'flex',
         flexDirection:'row',
         alignItems:'center',
-        width: 505,
+        //width: 505,
     }
 
     const tabContainer = {
